@@ -7,8 +7,8 @@ class Transaction(models.Model):
     name = models.CharField(max_length=100)
     amount = models.IntegerField()
     type = models.CharField(max_length=10)
-    date_in = models.DateField()
-    date_out = models.DateField()
+    date_in = models.DateField(null=True)
+    date_out = models.DateField(null=True)
     total = models.IntegerField()
 
     def __str__(self):
@@ -18,7 +18,7 @@ class Debit(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     amount = models.IntegerField()
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='images/',null=True)
     date = models.DateField()
 
     def __str__(self):
@@ -28,7 +28,7 @@ class Credit(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     amount = models.IntegerField()
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='images/',null=True)
     date = models.DateField()
     
     def __str__(self):

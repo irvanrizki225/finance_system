@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+
+<section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-left">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active">Transaction</li>
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Data Transaction</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="table_id" class="table table-bordered table-hover">
+                    <tr>
+                        <th>No</th>
+                        <th>User</th>
+                        <th>Name Of Transaction</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Date In</th>
+                        <th>Date Out</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr>
+                        {% with no="1" %}
+                        {% for transaction in transactions %}
+                        <td>{{ no }}</td>
+                        <td>{{ transaction.user.username }}</td>
+                        <td>{{ transaction.name }}</td>
+                        <td>{{ transaction.amount }}</td>
+                        <td>{{ transaction.type }}</td>
+                        <td>{{ transaction.date_in }}</td>
+                        <td>{{ transaction.date_out }}</td>
+                        <td>{{ transaction.total }}</td>
+                        <td>
+                            <a href="update/{{ transaction.id }}">Edit</a>
+                            <a href="delete/{{ transaction.id }}">Delete</a>
+                        </td>
+                        {% endfor %}
+                        {% endwith %}
+                    </tr>
+                </table>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+{% endblock %}
