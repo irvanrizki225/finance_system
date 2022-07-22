@@ -7,10 +7,10 @@ transaction
 id, name, amount, type, date_in, date_out, total
 
 kredit
-id, id_bank, name, image, date
+id, id_transaction, name, image, date
 
 debit
-id, id_bank, name, image, date
+id, id_transaction, name, image, date
 
 expenses
 id, name, amount
