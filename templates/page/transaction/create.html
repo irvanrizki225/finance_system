@@ -1,6 +1,7 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
+{% load crispy_forms_tags %}
 
 
 <section class="content-header">
@@ -23,41 +24,15 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Data Transaction</h3>
+              <h3 class="card-title">Create Data Transaction</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <table id="table_id" class="table table-bordered table-hover">
-                    <tr>
-                        <th>No</th>
-                        <th>User</th>
-                        <th>Name Of Transaction</th>
-                        <th>Amount</th>
-                        <th>Type</th>
-                        <th>Date In</th>
-                        <th>Date Out</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                    </tr>
-                    <tr>
-                        {% with no="1" %}
-                        {% for transaction in transactions %}
-                        <td>{{ no }}</td>
-                        <td>{{ transaction.user.username }}</td>
-                        <td>{{ transaction.name }}</td>
-                        <td>{{ transaction.amount }}</td>
-                        <td>{{ transaction.type }}</td>
-                        <td>{{ transaction.date_in }}</td>
-                        <td>{{ transaction.date_out }}</td>
-                        <td>{{ transaction.total }}</td>
-                        <td>
-                            <a href="update/{{ transaction.id }}">Edit</a>
-                            <a href="delete/{{ transaction.id }}">Delete</a>
-                        </td>
-                        {% endfor %}
-                        {% endwith %}
-                    </tr>
-                </table>
+              <form action="" method="post" novalidate>
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
             </div>
             <!-- /.card-body -->
           </div>

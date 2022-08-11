@@ -1,70 +1,66 @@
-from webbrowser import get
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.views.generic.edit import FormView
-from django.shortcuts import get_object_or_404, HttpResponsePermanentRedirect
+from asyncio.windows_events import NULL
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, render, get_object_or_404
+
 from .models import Transaction
-from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import TransactionForm
 
+def index(request):
+    transactions = Transaction.objects.all()
+    return render(request, 'page/transaction/index.html', {'transactions': transactions})
 
-# list transactions
-class TransactionListView(LoginRequiredMixin, ListView):
-    model = Transaction
-    template_name = 'page/transaction/index.html'
-    context_object_name = 'transactions'
+def create(request):
+    last_transaction = Transaction.objects.last()
+    if request.method == 'POST':
 
-    def get_queryset(self):
-        return  Transaction.objects.filter(user=self.request.user.is_authenticated).all()
+        if last_transaction == None:
+            total = request.POST['amount']
+        else:
+            if request.POST['type'] == 'Debit':
+                total = int(last_transaction.total)+int(request.POST['amount'])
+            else:
+                 total = int(last_transaction.total) - int(request.POST['amount'])
 
-# # detail transaction
-# class TransactionDetailView(DetailView):
-#     # model = Transaction
-#     template_name = 'transaction/transaction_detail.html'
-#     # context_object_name = 'transaction'
-#     queryset = Transaction.objects.all()
-
-#     def get_object(self):
-#         Transaction = super().get_object()
-#         return Transaction
-
-# create transaction
-class TransactionCreateView(CreateView):
-    model = Transaction
-    template_name = 'page/transaction/create.html'
-    fields = [ 'name', 'amount', 'type', 'date_in', 'date_out', 'total']
-    success_url = '/transaction/'
-    forms = TransactionForm
-
-    def get_queryset(self):
-        return Transaction.objects.all()
-
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
-
-# update transaction
-class TransactionUpdateView(UpdateView):
-    model = Transaction
-    template_name = 'page/transaction/update.html'
-    fields = [ 'name', 'amount', 'type', 'date_in', 'date_out', 'total']
-    forms = TransactionForm
-    success_url = '/transaction/'
-
-    def get_queryset(self):
-        return Transaction.objects.all()
-
-    def get_object(self):
-        Transaction = super().get_object()
-        return Transaction
-
-    def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
+        if request.POST['date_in'] == '':
+            date_in = NULL
+        else:
+           date_in = request.POST['date_in']
 
 
-# delete transaction
-class TransactionDeleteView(DeleteView):
-    model = Transaction
-    success_url = '/transaction/'
+        if request.POST['date_out'] == '':
+            date_out = NULL
+        else:
+            date_out = request.POST['date_out']
 
-    
+
+        post = Transaction()
+        post.user = request.user
+        post.name = ''.join(request.POST['name'])
+        post.amount = request.POST['amount']
+        post.type = request.POST['type']
+        post.date_in = date_in
+        post.date_out = date_out
+        post.total = int(total)
+        post.save()
+        return HttpResponseRedirect('/transaction/')
+        # return render(total)
+        
+    else:
+        form = TransactionForm()
+    return render(request, 'page/transaction/create.html', {'form': form})
+
+def update(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk)
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, instance=transaction)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/transaction/')
+    else:
+        form = TransactionForm(instance=transaction)
+        return render(request, 'page/transaction/update.html', {'form': form})
+
+def delete(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk)
+    transaction.delete()
+    return redirect('/transaction/')

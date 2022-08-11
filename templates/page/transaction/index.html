@@ -21,9 +21,12 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
-          <div class="card">
-            <div class="card-header">
+          <div class="card ">
+            <div class="card-header text-right">
               <h3 class="card-title">Data Transaction</h3>
+              <div class="col align-self-end">
+                <a href="/transaction/create" class="btn btn-primary">Add data</a>
+              </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -39,10 +42,10 @@
                         <th>Total</th>
                         <th>Action</th>
                     </tr>
+                    {% with no=1 %}
+                    {% for transaction in transactions %}
                     <tr>
-                        {% with no="1" %}
-                        {% for transaction in transactions %}
-                        <td>{{ no }}</td>
+                        <td>{{ transaction.id }}</td>
                         <td>{{ transaction.user.username }}</td>
                         <td>{{ transaction.name }}</td>
                         <td>{{ transaction.amount }}</td>
@@ -54,9 +57,9 @@
                             <a href="update/{{ transaction.id }}">Edit</a>
                             <a href="delete/{{ transaction.id }}">Delete</a>
                         </td>
-                        {% endfor %}
-                        {% endwith %}
                     </tr>
+                    {% endfor %}
+                      {% endwith %}
                 </table>
             </div>
             <!-- /.card-body -->
